@@ -58,7 +58,11 @@ def message():
         d_shifted = d + timedelta
         starts_formatted = d_shifted.strftime("%Y%m%dT%H%M00Z")
         
-        ends = request.form['ends']
+        hourlong_timedelta = datetime.timedelta(hours=1)
+        ends_d_shifted = d_shifted + hourlong_timedelta
+        ends_formatted = ends_d_shifted.strftime("%Y%m%dT%H%M00Z")
+
+        """ends = request.form['ends']
         if ends.endswith('AM'):
             ends = ends.rstrip('AM')
             timedelta = datetime.timedelta(hours=5)
@@ -68,20 +72,21 @@ def message():
         t_stripped = time.strptime(ends, '%m-%d-%Y %H:%M')
         d = datetime.datetime(t_stripped.tm_year, t_stripped.tm_mon, t_stripped.tm_mday, t_stripped.tm_hour, t_stripped.tm_min)
         d_shifted = d + timedelta
-        ends_formatted = d_shifted.strftime("%Y%m%dT%H%M00Z")
+        ends_formatted = d_shifted.strftime("%Y%m%dT%H%M00Z")"""
         
         date1 = starts_formatted #'20120301T240000Z'
         date2 = ends_formatted #'20120303T270000Z'
-        text = request.form['headline']
+        headline = request.form['headline']
+        details = request.form['details']
         if (request.form['website'].strip() != ""):
-            text += ' (' + request.form['website'] + ')'
+            headline += ' (' + request.form['website'] + ')'
         
         params = {
             'action' : 'TEMPLATE',
-            'text' : text,
+            'text' : headline,
             'dates' : date1 + '/' + date2,
             'location' : request.form['location'],
-            'details' : request.form['details'],
+            'details' : details,
             'prop' : 'name:eclubform'
         }
         
@@ -94,15 +99,20 @@ def message():
         parts = ['http', 'www.google.com', '/calendar/event', '', query, '']
         add_to_gcal_url = urlparse.urlunparse(parts)
         
-        messageText = '<h2>url</h2><p>' + add_to_gcal_url + '</p><h2>name</h2><p>' + name + '</p><h2>email</h2><p>' + email + '</p>'
-        
+        messageText = ''
+        messageText += '<h3>' + name + ' (' + email + ') just submitted an announcement to be added to the events calendar.</h3>'
+        messageText += '<p>Title: ' + headline + '</p><p>Description: ' + details + '</p>'
+        messageText += '<h2><a href="' + add_to_gcal_url + '">Add to Calendar</a></h2>'
+
+        message_subject = "New Announcement Submission: " + headline
+
         # send mail
-        msg = Message("New Event Submission", sender="info@princetoneclub.com", recipients=["me@ryanshea.org"])
+        msg = Message(message_subject, sender="info@princetoneclub.com", recipients=["me@ryanshea.org"])
         msg.html = messageText
         #print msg
         mail.send(msg)
-        
-        return messageText;
+
+        return "<p>Thank you for submitting an announcement to the Princeton Entrepreneurship Club events calendar!</p>" + messageText
     else:
         return render_template('add_event.html')
 

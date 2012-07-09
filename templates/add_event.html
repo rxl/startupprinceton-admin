@@ -6,11 +6,16 @@
 <script type=text/javascript src="{{url_for('static', filename='datetimepicker_css.js')}}"></script>
 <script type="text/javascript" src="{{url_for('static', filename='validate.js')}}"></script>
 
-<h2>Submit an event to the Princeton Entrepreneurship Club Events Calendar</h2>
+<h2>Submit an announcement to the Princeton Entrepreneurship Club Events Calendar</h2>
 <div id="content">
 <form class="form" id="jform" name="eventform" action="" method="post">
 	<fieldset>
-		<legend>Event Info</legend>
+		<legend>Announcement Info</legend>
+		<p>
+			<label for="announcement_type">Type:</label>
+			<input type="radio" name="announcement_type" checked="checked" id="event_announcement" /> Event
+			<input type="radio" name="announcement_type" id="submission_deadline" /> Submission Deadline
+		</p>
 		<p>
 			<label for="headline">Headline:</label>
 			<input type="text" name="headline" class="headline" id="headline" required="true" />
@@ -23,19 +28,14 @@
 			<label for="details">Description:</label>
 			<textarea name="details" class="details" id="details"></textarea>
 		</p>
-		<p>
+		<p id="location_section">
 			<label for="location">Location:</label>
 			<input type="text" name="location" class="location" id="location" />
 		</p>
 		<p>
-			<label for="starts">Starts:</label>
+			<label for="starts" id="starts_label">Starts:</label>
 			<input type="text" name="starts" class="starts datepicker" id="starts" maxlength="25" size="25" />
 			<img src="{{url_for('static', filename='images/cal.gif')}}" onclick="javascript:NewCssCal ('starts','MMddyyyy','arrow',true,'12')" style="cursor:pointer" id="starts_cal" />
-		</p>
-		<p>
-			<label for="ends">Ends:</label>
-			<input type="text" name="ends" class="ends datepicker" id="ends" maxlength="25" size="25" />
-			<img src="{{url_for('static', filename='images/cal.gif')}}" onclick="javascript:NewCssCal ('ends','MMddyyyy','arrow',true,'12')" style="cursor:pointer" id="ends_cal" />
 		</p>
 	</fieldset>
 	<fieldset>

@@ -1,4 +1,5 @@
 $(document).ready(function() {
+    $('#event_announcement').click().change();
     var jVal = {
         'fullname' : function() {
             $('body').append('<div id="nameInfo" class="info"></div>');
@@ -88,6 +89,7 @@ $(document).ready(function() {
                 locationInfo.removeClass('error').addClass('correct').html('&radic;').show();
                 ele.removeClass('wrong').addClass('normal');
             }
+
         },
         'email' : function() {
             $('body').append('<div id="emailInfo" class="info"></div>');
@@ -187,7 +189,7 @@ $(document).ready(function() {
             if (!jVal.errors) {
                 $('#jform').submit();
             }
-        }
+        },
     };
 
 // ====================================================== //
@@ -200,10 +202,14 @@ $(document).ready(function() {
             jVal.email();
             jVal.details();
             jVal.starts();
-            jVal.ends();
             jVal.headline();
             jVal.website();
-            jVal.location();
+            
+            if ($('#event_announcement').attr("checked") != "undefined" &&
+                $('#event_announcement').attr("checked")) {
+                jVal.location();
+            }
+
             jVal.sendIt();
         });
         return false;
@@ -214,13 +220,26 @@ $(document).ready(function() {
     $('#email').change(jVal.email);
     $('#details').change(jVal.details);
     $('#starts').change(jVal.starts);
-    $('#ends').change(jVal.ends);
     $('#starts').click(jVal.starts);
-    $('#ends').click(jVal.ends);
     $('#starts').focus(jVal.starts);
-    $('#ends').focus(jVal.ends);
     $('#headline').change(jVal.headline);
     $('#website').change(jVal.website);
     $('#location').change(jVal.location);
+
+
+    $('#event_announcement').change(function() {
+        $('#location_section').show();
+        $('#locationInfo').show();
+        $('#location').val('');
+        $('#starts_label').text('Starts:');
+        $('.info').remove();
+    });
+    $('#submission_deadline').change(function() {
+        $('#location_section').hide();
+        $('#locationInfo').hide();
+        $('#location').val('');
+        $('#starts_label').text('Deadline:');
+        $('.info').remove();
+    });
 });
 
