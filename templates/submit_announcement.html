@@ -1,6 +1,6 @@
 <!doctype html>
 <head>
-<title> Add E-Club Event </title>
+<title>Submit Announcement - {{ org_name }}</title>
 
 <link rel="stylesheet" type="html/css" href="{{url_for('static', filename='style.css')}}" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
@@ -8,7 +8,7 @@
 <script type="text/javascript" src="{{url_for('static', filename='validate.js')}}"></script>
 </head>
 <body>
-<h2>Submit an announcement to the Princeton Entrepreneurship Club Events Calendar</h2>
+<h2>Submit an announcement to the events calendar of {{ org_name }}</h2>
 <div id="content">
 <form class="form" id="jform" name="eventform" action="" method="post">
 	<fieldset>

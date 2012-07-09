@@ -5,30 +5,41 @@ import datetime
 import os
 from flask import send_from_directory
 from flaskext.mail import Mail, Message
+import json
 
+# fire up the flask app
 app = Flask(__name__)
 mail = Mail(app)
 
+# organization specific settings
+org_data = None
+with open('org_data.json', 'r') as f:
+    json_data = f.read()
+    org_data = json.loads(json_data)
+org_name = org_data['org_name']
+org_website = org_data['org_website']
+org_email = org_data['org_email']
+org_email_password = org_data['org_email_password']
+recipient_of_cal_emails = org_data['recipient_of_cal_emails']
+
+# app settings
 app.config.update(
     DEBUG = True,
     #Email settings
     MAIL_SERVER = 'smtp.gmail.com',
     MAIL_PORT = 587, # 465 or 587
     MAIL_USE_TLS = True,
-    MAIL_USERNAME = 'info@princetoneclub.com',
-    MAIL_PASSWORD = 'Tigerlaunch#1'
+    MAIL_USERNAME = org_email,
+    MAIL_PASSWORD = org_email_password
 )
 
+# fire up the mail app
 mail = Mail(app)
 
 @app.route('/')
 def index():
-    return '''
-        <h1>The Princeton Entrepreneurship Club</h1>
-        <h2>Internal Tools</h2>
-        <p><a href="/add_event">Add Event</a></p>
-        <p><a href="http://www.princetoneclub.com">Website</a></p>
-    '''
+    return render_template('index.html',
+        org_name=org_name, org_website=org_website)
 
 @app.route('/favicon.ico')
 def favicon():
@@ -39,7 +50,7 @@ def favicon():
 # allow script to send email containing url
 # have error checking in the form
 
-@app.route('/add_event', methods=['GET', 'POST'])
+@app.route('/submit_announcement', methods=['GET', 'POST'])
 def message():
     if request.method == 'POST':
         name = request.form['fullname']
@@ -107,14 +118,14 @@ def message():
         message_subject = "New Announcement Submission: " + headline
 
         # send mail
-        msg = Message(message_subject, sender="info@princetoneclub.com", recipients=["me@ryanshea.org"])
+        msg = Message(message_subject, sender=org_email, recipients=[recipient_of_cal_emails])
         msg.html = messageText
         #print msg
         mail.send(msg)
 
-        return "<p>Thank you for submitting an announcement to the Princeton Entrepreneurship Club events calendar!</p>" + messageText
+        return render_template('submission_confirmation.html', org_name=org_name)
     else:
-        return render_template('add_event.html')
+        return render_template('submit_announcement.html', org_name=org_name)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
